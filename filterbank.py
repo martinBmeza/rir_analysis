@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.signal import butter, lfilter
+from scipy.signal import butter, lfilter, fftconvolve
 
 class Filterbank():
     """
@@ -74,23 +74,17 @@ class Filterbank():
             ir2Bands = np.real(np.fft.ifft(np.abs(np.abs(np.fft.fft(irBands, axis=0))), axis=0))
 
         ir2Bands = np.concatenate((ir2Bands[nbins:(2 * nbins), :], ir2Bands[0:nbins, :]), axis=0)
-        import pdb ; pdb.set_trace()
         self.filters = ir2Bands
 
 
-    def filter_apply(self, signal):
+    def apply(self, signal):
+        N = self.filters.shape[0] // 2 # filter final length
+        filtered_bands = np.empty((len(self.fc), len(signal)))
+        # apply each band
+        for band, _ in enumerate(self.fc):
+            cur_filt = self.filters[:,band]
+            filtered = fftconvolve(signal, cur_filt)
+            filtered = filtered[N:N+len(signal)]
+            filtered_bands[band, :] = filtered
         
-
-
-
-
-if __name__ == '__main__':
-
-    params = {'fs' : 16000,
-              'bands' : [125, 350, 500, 1000, 2000, 4000],
-              'bandsize' : 1,
-              'order' : 4,
-              'f_length': 16384,
-              'power' : True}
-
-    filterbank = Filterbank(**params)
+        return filtered_bands
