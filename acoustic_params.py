@@ -33,8 +33,13 @@ class Acoustic_params():
         self.time = np.linspace(0, len(rir)/self.fs, len(rir))
         return
 
+    def plotear_banda(self, axs, signal, **kwargs):
+        axs.plot(signal, **kwargs)
+        axs.legend()
 
-    def reverberation_time(self, filterbank):
+
+    def reverberation_time(self, filterbank, plot=False):
+        # Uso solo la parte late para sacar el TR
         bands = filterbank.apply(self.late)
        
         init = 0
@@ -42,11 +47,8 @@ class Acoustic_params():
         factor = 2.0
         tr = []
 
-        def plotear_banda(axs, signal, label):
-                axs.plot(signal, label=label)
-                axs.legend()
-
-        fig, axs = plt.subplots(len(bands), figsize=(15,25))
+        if plot: 
+            fig, axs = plt.subplots(len(bands), figsize=(15,25))
 
         for i,band in enumerate(bands):
             noise_onset = lundeby(band, self.fs)
@@ -58,11 +60,12 @@ class Acoustic_params():
             sch = np.cumsum(abs_signal[::-1]**2)[::-1]
             sch_db = 10.0 * np.log10(sch / np.max(sch))
             
-            #ploteos
-            plotear_banda(axs[i], sch_db, 'Schroeder')
-            plotear_banda(axs[i], librosa.amplitude_to_db(abs_completa), 'Completa')
-            plotear_banda(axs[i], librosa.amplitude_to_db(abs_signal), 'Filtrada')
-                    
+            if plot:
+                #ploteos
+                self.plotear_banda(axs[i], sch_db, label='Schroeder')
+                self.plotear_banda(axs[i], librosa.amplitude_to_db(abs_completa), label='Completa')
+                self.plotear_banda(axs[i], librosa.amplitude_to_db(abs_signal), label='Filtrada')
+                        
 
             # Linear regression
             sch_init = sch_db[np.abs(sch_db - init).argmin()]

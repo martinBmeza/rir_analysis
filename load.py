@@ -16,8 +16,5 @@ class RIR():
         rir, self.fs = librosa.load(self.path, sr=self.fs, dtype='float64')
         self.rir = rir / max(abs(rir))
         
-
-
-
 if __name__ == '__main__':
     impulso = RIR('files/rir.wav')

@@ -15,7 +15,7 @@ params = {'fs' : 16000,
 
 filterbank = Filterbank(**params)
 acoustics = Acoustic_params(impulso.rir, impulso.fs)
-tr = acoustics.reverberation_time(filterbank)
+tr = acoustics.reverberation_time(filterbank, plot = True)
 plt.figure()
 plt.semilogx(params['bands'],tr)
 plt.xticks(params['bands'], ['125 Hz', '250 Hz', '500 Hz', '1 kHz', '2 kHz', '4 kHz'])

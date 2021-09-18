@@ -60,7 +60,7 @@ def lundeby(signal, fs):
     # First estimation of noise floor using the tail (last 10%)
     tail = int(len(t_env) * 0.1)
     noise_level = env[-tail:].sum() / tail
-    print('First estimation of noise floor: {:.2f} dB'.format(noise_level))
+    #print('First estimation of noise floor: {:.2f} dB'.format(noise_level))
 
     intercept, slope, x_line, y_line = estim_slope(t_env, env, 0, noise_level+NOISE_FLOOR_DISTANCE)
     cross_point = (noise_level - intercept) / slope
@@ -70,7 +70,7 @@ def lundeby(signal, fs):
     interval_dB = 10 / intervals_per_10dB
     interval = int(-interval_dB / slope)
     time_interval = interval / fs
-    print('New time interval: {:.4f} seconds'.format(time_interval))
+    #print('New time interval: {:.4f} seconds'.format(time_interval))
 
     t_env, env= envelope(signal_sqr, fs, time_interval=time_interval)
     
@@ -79,13 +79,13 @@ def lundeby(signal, fs):
         safe_cross_point = int(-margin_cross/slope) + int(cross_point)
         tail = int(len(t_env) * 0.1)
         if (safe_cross_point < t_env[-tail]):
-            print('uso el intervalo')
+            #print('uso el intervalo')
             index_cross = np.where(t_env > safe_cross_point)[0][0]
             noise_level = env[index_cross:].sum() / len(env[index_cross:])
         else:
-            print('uso la tail')
+            #print('uso la tail')
             noise_level = env[-tail:].sum() / tail
-        print('Nueva estimacion del piso de ruido de {:.2f} dB'.format(noise_level))
+        #print('Nueva estimacion del piso de ruido de {:.2f} dB'.format(noise_level))
 
 
         def estim_slope_f(t_env, env, init, end):
