@@ -7,4 +7,4 @@
 *.npy
 
 # audio files
-# *.wav
+*.wav
