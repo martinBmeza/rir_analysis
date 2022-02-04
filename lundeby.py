@@ -38,9 +38,9 @@ def estim_slope(t_env, env, init, end):
 
 def lundeby(signal, fs):
     # CONSTANTES DE DISEÑO
-    TIME_INTERVAL = 0.005 # [s] from 0.005 to 0.001 
+    TIME_INTERVAL = 0.009 # [s] from 0.005 to 0.001 
     NOISE_FLOOR_DISTANCE = 5 # [dB] from 5 to 10. Level above the noise
-    INTERVALS = 3 # Intervals per 10 dB of decay. From 3 to 10 for low - high freqs
+    INTERVALS = 10 # Intervals per 10 dB of decay. From 3 to 10 for low - high freqs
     MARGIN = 5 # Safety margin from cross point. From 5 to 10 dB of decay 
     DINAMIC_ABOVE, DINAMIC_BELOW = 10, 5 # Dinamic range of 10-20 dB referred to the noise floor
     
@@ -98,6 +98,8 @@ def lundeby(signal, fs):
         # Estimar la pendiente 5 dB [5-10] encima del pisode ruido para un rango de 10 dB [10-20]
 
         init = (noise_level+DINAMIC_ABOVE - intercept) / slope
+        if init < 0 :
+            init = 0 
         init = int(init / (time_interval * fs))
         end = (noise_level-DINAMIC_BELOW - intercept) / slope
         end = int(end / (time_interval * fs))
