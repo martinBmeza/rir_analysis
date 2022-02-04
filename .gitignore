@@ -5,6 +5,6 @@
 *.pyc
 *__pycache__
 *.npy
-
+*.ipynb_checkpoints
 # audio files
 *.wav
